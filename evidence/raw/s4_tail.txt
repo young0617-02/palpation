@@ -1,0 +1,105 @@
+=== 端到端联调脚本 ===
+  MQTT:  127.0.0.1:1883
+  Cloud: http://127.0.0.1:8010
+  Edge:  http://127.0.0.1:9010
+  Python: .venv/Scripts/python.exe
+
+
+        ……（此处省略中间 715 行：cloud/edge 启动、OPC UA 重连、事件列表 JSON）……
+
+[21:49:13]   事件数量: 95
+
+--- /v1/watermarks/gw-sim-001 ---
+INFO:     127.0.0.1:52222 - "GET /v1/watermarks/gw-sim-001 HTTP/1.1" 200 OK
+{
+    "gw_id": "gw-sim-001",
+    "last_acked_seq": 90,
+    "gaps": []
+}
+[21:49:14] [7/8] OTA 流程验证...
+
+--- POST /v1/devices/register ---
+INFO:     127.0.0.1:52223 - "POST /v1/devices/register HTTP/1.1" 200 OK
+{
+    "gw_id": "gw-sim-001"
+}
+
+--- POST /v1/models/register ---
+INFO:     127.0.0.1:52225 - "POST /v1/models/register HTTP/1.1" 200 OK
+{
+    "model_id": "anomaly-det",
+    "version": "0.2.0",
+    "artifact_url": "http://127.0.0.1:8000/v1/models/artifacts/anomaly-det-0.2.0-model_07P7.onnx",
+    "sha256": "53e3b3d5d6d7613e52cbe0fb31820631042d57758c692eea23a71eadd57cccd5",
+    "size_bytes": 22,
+    "quant": "int8",
+    "runtime": "onnxruntime",
+    "target_hardware": [
+        "x86-avx2"
+    ],
+    "requires_firmware": "0.1.0",
+    "preproc_ver": "ae-v1",
+    "metrics_at_register": {},
+    "rollout": {
+        "strategy": "ring",
+        "rings": [
+            1,
+            10,
+            50,
+            100
+        ],
+        "stable_window_h": "24"
+    },
+    "signature": null,
+    "schema_ver": "1.0"
+}
+
+--- POST /v1/rollout ---
+INFO:     127.0.0.1:52226 - "POST /v1/rollout HTTP/1.1" 200 OK
+{
+    "ok": true,
+    "manifest": {
+        "model_id": "anomaly-det",
+        "version": "0.2.0",
+        "artifact_url": "http://127.0.0.1:8000/v1/models/artifacts/anomaly-det-0.2.0-model_KtTT.onnx",
+        "sha256": "53e3b3d5d6d7613e52cbe0fb31820631042d57758c692eea23a71eadd57cccd5",
+        "size_bytes": 22,
+        "quant": "int8",
+        "runtime": "onnxruntime",
+        "target_hardware": [
+            "x86-avx2"
+        ],
+        "requires_firmware": "0.1.0",
+        "preproc_ver": "ae-v1",
+        "metrics_at_register": {},
+        "rollout": {
+            "strategy": "ring",
+            "rings": [
+                1,
+                10,
+                50,
+                100
+            ],
+            "stable_window_h": "24"
+        },
+        "signature": null,
+        "schema_ver": "1.0"
+    }
+}
+[21:49:14] [8/8] 联调结果汇总
+
+=== 联调结果 ===
+INFO:     127.0.0.1:52228 - "GET /health HTTP/1.1" 200 OK
+  cloud 健康:     OK
+INFO:     127.0.0.1:52229 - "GET /health HTTP/1.1" 200 OK
+  edge 健康:      OK
+  事件入库:       95 条
+  数据流验证:     PASS (传感器→边缘→云端)
+
+[21:49:14] 端到端联调脚本执行完毕
+
+=== 清理后台进程 ===
+  终止 PID 5317
+  终止 PID 5323
+  终止 PID 5344
+=== 清理完成 ===

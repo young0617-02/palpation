@@ -1,0 +1,73 @@
+==============================================================================
+ Palpation 分路径延迟基准实测报告 (bench_latency)
+==============================================================================
+ 生成时间      : 2026-10-15T01:49:53.504334+00:00
+ 目标口径      : 方案 §6.4 分路径 P95 预算
+
+[测试条件]
+  CPU 型号      : Intel64 Family 6 Model 183 Stepping 1, GenuineIntel
+  逻辑核数      : 20
+  平台          : Windows-11-10.0.26200-SP0
+  Python        : 3.12.8
+  BLAS/OMP 线程 : 2 (BENCH_THREADS，模拟 2C)
+  T3 llama.cpp  : n_threads=2 (llm_llamacpp.py 硬编码)
+  滑窗 size     : 32   规则条数: 3
+  说明          : T1/T2/T4 为单核为主的小数组运算，20 核开发机与 2C 目标差异小；
+                  T3 已固定 n_threads=2，但开发机单核性能可能优于目标 2C 边缘设备。
+
+[T1 确定性告警路径 (滑窗统计 + 规则判定)]
+  迭代次数      : 2000 (预热 300)
+  metrics       : vibration_rms / temperature / current
+  规则条数      : 3 (从 config/current.yaml 加载)
+  窗口 size     : 32
+  mean          : 0.4871 ms
+  P50           : 0.4144 ms
+  P95           : 0.9554 ms
+  P99           : 1.2601 ms
+  min / max     : 0.1922 / 5.8528 ms
+  规则命中次数  : 941 (仅作正确性参考)
+  目标          : P95 < 50 ms
+  结论          : PASS  余量 52.3x
+
+[T2 ONNX 异常检测路径 (参考)]
+  后端          : onnxruntime  模型: model.onnx
+  迭代次数      : 500 (预热 100)
+  mean          : 1.8262 ms
+  P95           : 3.3714 ms
+  min / max     : 0.8976 / 4.8633 ms
+  目标          : P95 < 200 ms
+  结论          : PASS  余量 59.3x
+
+[T4 本地知识检索路径 (参考)]
+  后端          : hash-embed  top_k=1
+  迭代次数      : 500 (预热 100)
+  mean          : 0.0580 ms
+  P95           : 0.1441 ms
+  min / max     : 0.0319 / 0.5255 ms
+  目标          : P95 < 80 ms
+  结论          : PASS  余量 555.3x
+
+[T3 端侧 LLM 一级初判路径 (重点)]
+  模型          : D:\project\Palpation\models\llm\qwen2.5-0.5b-instruct-q4_k_m.gguf
+  max_tokens    : 32  num_ctx: 2048  n_threads: 2 (代码固定)
+  推理次数      : 20 (预热 1，prompt 每次唯一)
+  有效 JSON 数  : 20/20
+  mean          : 834.7 ms
+  P50           : 822.8 ms
+  P95           : 917.6 ms
+  min / max     : 775.1 / 924.4 ms
+  输出 token    : 平均 23.0 /次 (上限 32)
+  吞吐          : 26.1 tok/s (3 次底层采样)
+  吞吐(校验)    : 27.6 tok/s (按 infer 平均延迟反推)
+  parse_rate    : 1.000  内部 p95_ms: 924.4
+  样本原始输出  : '{"diagnosis": "轴承润滑不良", "confidence": 0.85, "tool": null}'
+  目标          : P95 < 1200 ms (2C 模拟)
+  结论          : PASS  余量 1.31x
+
+==============================================================================
+ 结论汇总
+==============================================================================
+  T1 确定性告警  P95 = 0.955 ms   目标 < 50 ms   PASS
+  T2 ONNX 判别   P95 = 3.371 ms   目标 < 200 ms   PASS
+  T4 知识检索    P95 = 0.144 ms   目标 < 80 ms   PASS
+  T3 LLM 初判    P95 = 917.6 ms   目标 < 1200 ms   PASS

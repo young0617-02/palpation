@@ -1,0 +1,52 @@
+# =============================================================================
+# mgmt-agent.service — 管理代理独立 systemd 服务（OTA / Probe / Recovery）
+# 方案文档 §7.6：管理代理与主应用进程隔离 ★
+#   - 主应用崩溃/升级失败时，管理代理仍存活，可远程接管、回滚、恢复
+#   - Before=edge-agent.service：管理代理先于主应用启动
+#   - Restart=always：管理代理永不退出（即使主应用挂了也要在线待命）
+# 安装：
+#   sudo cp deploy/mgmt-agent.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now mgmt-agent.service
+# =============================================================================
+[Unit]
+Description=Edge AI Agent - Management Agent (OTA/Probe/Recovery)
+Documentation=https://github.com/palpation/edge-ai-agent
+After=network-online.target
+Before=edge-agent.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mgmt-agent
+Group=mgmt-agent
+WorkingDirectory=/opt/edge-agent
+ExecStart=/opt/edge-agent/.venv/bin/python -m mgmt_agent.daemon
+Environment=MGMT_API_PORT=9001
+Environment=EDGE_API_PORT=9000
+Restart=always
+RestartSec=3
+StartLimitBurst=5
+StartLimitIntervalSec=120
+
+# 资源限制（管理代理更轻量：0.5 核 / 512MB）
+CPUQuota=50%
+MemoryMax=512M
+TasksMax=64
+
+# 安全加固
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/edge-agent /opt/edge-agent/models
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# 日志输出到 journald
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=mgmt-agent
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,4 @@
+# 统一行尾符策略：跨平台一致
+# - text=auto：由 git 自动识别文本文件并做规范化
+# - eol=lf：仓库内与检出到工作区一律使用 LF（覆盖 core.autocrlf 行为）
+* text=auto eol=lf

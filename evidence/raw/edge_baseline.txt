@@ -1,0 +1,15 @@
+========================================================
+edge 基线 RSS 实测
+========================================================
+baseline (python+psutil)     =    18.2 MiB
+after numpy+onnxruntime      =    50.5 MiB
+after T2 onnx session        =    76.7 MiB
+after import fastapi         =    96.2 MiB
+after import uvicorn         =    98.7 MiB
+after import prometheus_client =    99.9 MiB
+after import sqlite3         =   100.4 MiB
+after LLM load               =   252.7 MiB
+llm.available                = True
+after LLM infer              =   623.5 MiB
+llm infer: 1302 ms, result=None
+FINAL (edge 基线常驻)            =   623.5 MiB

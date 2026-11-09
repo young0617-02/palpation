@@ -1,0 +1,5 @@
+NAME         IMAGE                 STATUS                        PORTS
+cloud-api    edge-ai-agent:1.0.0   Up About a minute (healthy)   8000/tcp
+edge-agent   edge-ai-agent:1.0.0   Up 4 minutes (healthy)        9000/tcp
+mgmt-agent   edge-ai-agent:1.0.0   Up About a minute (healthy)   0.0.0.0:9001->9001/tcp, [::]:9001->9001/tcp
+mosquitto    eclipse-mosquitto:2   Up 5 minutes                  1883/tcp

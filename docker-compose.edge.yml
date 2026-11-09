@@ -1,0 +1,163 @@
+# =============================================================================
+# docker-compose.edge.yml — 边缘环境编排
+# 方案文档 §7.3：开发期 Docker 模拟方案（Phase 0 完整复现）
+#   模拟 2C4G 边缘硬件：cpus=2.0 / mem_limit=4g
+#   安全加固：read_only 根文件系统 + cap_drop ALL + 非 root 用户
+# 启动：docker compose -f docker-compose.edge.yml up -d
+# =============================================================================
+services:
+  # ----- 端侧 Agent 主应用 ----------------------------------------------------
+  edge-agent:
+    build: .
+    image: edge-ai-agent:1.0.0
+    container_name: edge-agent
+    cpus: 2.0
+    mem_limit: 4g
+    memswap_limit: 4g
+    pids_limit: 256
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m
+    cap_drop:
+      - ALL
+    volumes:
+      - edge-models:/opt/edge-agent/models
+      - edge-queue:/var/lib/edge-agent
+    environment:
+      - GW_ID=gw-sim-001
+      - CLOUD_MQTT_HOST=mosquitto
+      - CLOUD_MQTT_PORT=1883
+      - CLOUD_MQTT=mosquitto:1883
+      - CLOUD_API=http://host.docker.internal:8000
+      - EDGE_API_PORT=9000
+      - EDGE_LLM_MODEL=qwen2.5-0.5b-instruct-q4_k_m.gguf
+      - EDGE_LLM_CTX=2048
+      - EDGE_LLM_MAXTOK=32
+      - DATA_DIR=/var/lib/edge-agent
+      - LOG_LEVEL=INFO
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
+    depends_on:
+      mosquitto:
+        condition: service_started
+    restart: unless-stopped
+
+  # ----- 管理代理（OTA / Probe / Recovery）------------------------------------
+  mgmt-agent:
+    build: .
+    image: edge-ai-agent:1.0.0
+    container_name: mgmt-agent
+    command:
+      - "/opt/edge-agent/.venv/bin/python"
+      - "-m"
+      - "uvicorn"
+      - "mgmt_agent.main:app"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "9001"
+    cpus: 0.5
+    mem_limit: 512m
+    memswap_limit: 512m
+    pids_limit: 64
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m
+    cap_drop:
+      - ALL
+    volumes:
+      - edge-models:/opt/edge-agent/models
+      - edge-queue:/var/lib/edge-agent
+    environment:
+      - GW_ID=gw-sim-001
+      - CLOUD_MQTT_HOST=mosquitto
+      - CLOUD_MQTT_PORT=1883
+      - EDGE_API_PORT=9000
+      - MGMT_API_PORT=9001
+      - DATA_DIR=/var/lib/edge-agent
+      - LOG_LEVEL=INFO
+    ports:
+      - "9001:9001"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:9001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      mosquitto:
+        condition: service_started
+    restart: unless-stopped
+
+  # ----- MQTT Broker（云边消息总线）-------------------------------------------
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    ports:
+      - "1883:1883"
+    command: ["mosquitto", "-c", "/mosquitto-no-auth.conf"]
+    volumes:
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    restart: unless-stopped
+
+  # ----- 设备模拟器：Modbus（10Hz 振动）--------------------------------------
+  device-sim-modbus:
+    build: ./sim
+    container_name: device-sim-modbus
+    command: ["python", "modbus_device.py", "--rate", "10"]
+    depends_on:
+      mosquitto:
+        condition: service_started
+    restart: unless-stopped
+
+  # ----- 设备模拟器：OPC UA（电参量）------------------------------------------
+  device-sim-opcua:
+    build: ./sim
+    container_name: device-sim-opcua
+    command: ["python", "opcua_meter.py"]
+    restart: unless-stopped
+
+  # ----- 云端 API（增量服务）--------------------------------------------------
+  cloud-api:
+    build: .
+    image: edge-ai-agent:1.0.0
+    container_name: cloud-api
+    command:
+      - "/opt/edge-agent/.venv/bin/python"
+      - "-m"
+      - "uvicorn"
+      - "cloud.main:app"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=sqlite:///cloud.db
+      - CLOUD_MQTT_HOST=mosquitto
+      - CLOUD_MQTT_PORT=1883
+    volumes:
+      - cloud-data:/opt/edge-agent/data
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      mosquitto:
+        condition: service_started
+    restart: unless-stopped
+
+volumes:
+  edge-models:
+  edge-queue:
+  mosquitto-data:
+  mosquitto-log:
+  cloud-data:

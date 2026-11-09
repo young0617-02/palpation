@@ -1,0 +1,44 @@
+========================================================================
+路线B：onnxruntime + bge-small-zh-v1.5 ONNX(int8) 资源实测
+========================================================================
+python=3.12.8 platform=Windows-11-10.0.26200-SP0
+onnxruntime=1.31.0 transformers=5.20.2 tokenizers=0.23.3
+numpy=2.5.4 psutil=7.2.2 cpu(logical/physical)=20/14
+ram_total=32560 MiB
+------------------------------------------------------------------------
+[磁盘]
+  model_dir total = 23.43 MiB
+           0.0 KiB  .cache\huggingface\.gitignore
+           0.2 KiB  .cache\huggingface\CACHEDIR.TAG
+           0.1 KiB  .cache\huggingface\download\config.json.metadata
+           0.1 KiB  .cache\huggingface\download\onnx\model_quantized.onnx.metadata
+           0.1 KiB  .cache\huggingface\download\special_tokens_map.json.metadata
+           0.1 KiB  .cache\huggingface\download\tokenizer.json.metadata
+           0.1 KiB  .cache\huggingface\download\tokenizer_config.json.metadata
+           0.1 KiB  .cache\huggingface\download\vocab.txt.metadata
+           3.3 KiB  .cache\huggingface\trees\75c43b069aac4d136ba6bc1122f995fedcfd2781.json
+           0.7 KiB  config.json
+       23448.1 KiB  onnx\model_quantized.onnx
+           0.1 KiB  special_tokens_map.json
+         428.8 KiB  tokenizer.json
+           0.4 KiB  tokenizer_config.json
+         107.0 KiB  vocab.txt
+  venv site-packages = 174 MiB
+------------------------------------------------------------------------
+[RSS MiB]
+  baseline              = 80.0
+  after imports         = 80.0
+  after session load    = 128.9  (增量 48.9)
+  single infer peak     = 130.0  (峰值增量 1.1)
+  batch32 infer peak    = 193.4  (峰值增量 64.5)
+  steady(200 queries)   = 145.4
+  final                 = 145.4
+  arena_enabled         = False
+------------------------------------------------------------------------
+[检索延迟 ms]  （tokenize + ONNX 前向 + 余弦排序）
+  corpus=   2  iters=30  build=105.7ms  total P50=15.05  P95=21.69  (tok P50=0.26 fwd P50=14.76 rank P50=0.037)
+    top3 hits: ['kb-bearing-rms', 'kb-temp-current']
+  corpus=1000  iters=30  build=21158.0ms  total P50=14.60  P95=21.95  (tok P50=0.28 fwd P50=13.47 rank P50=0.350)
+    top3 hits: ['kb-fake-0868', 'kb-bearing-rms', 'kb-fake-0293']
+------------------------------------------------------------------------
+JSON → evidence\raw\bench_rag_onnx_noarena.json

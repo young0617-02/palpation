@@ -1,0 +1,817 @@
+=== 端到端联调脚本 ===
+  MQTT:  127.0.0.1:1883
+  Cloud: http://127.0.0.1:8010
+  Edge:  http://127.0.0.1:9010
+  Python: .venv/Scripts/python.exe
+
+[21:48:49] [1/8] 前置检查...
+[21:48:49]   MQTT broker: 可达
+[21:48:49] [2/8] 启动 cloud (port 8010)...
+[21:48:49]   cloud PID=5317
+INFO:     Started server process [278172]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8010 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59887 - "GET /health HTTP/1.1" 200 OK
+[21:48:50]   cloud 就绪
+[21:48:50] [3/8] 启动 edge (port 9010)...
+[21:48:50]   edge PID=5323
+[21:48:53]   edge 已启动
+[21:48:54] [4/8] 启动 sim 模拟器 (fault_after=6s)...
+[21:48:54]   sim PID=5344
+[21:48:54] [5/8] 等待数据流 (18s)...
+[21:48:54]   sim 发布传感器数据 → edge 规则检测 → cloud 入库 + 诊断
+INFO:edge.agent.llm_llamacpp:edge llm ready: models\llm\qwen2.5-0.5b-instruct-q4_k_m.gguf
+INFO:     Started server process [250448]
+INFO:     Waiting for application startup.
+INFO:asyncua.client.client:connect (auto_reconnect=None)
+INFO:asyncua.client.ua_client.UaClient:opening connection
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:9010 (Press CTRL+C to quit)
+WARNING:pymodbus.logging:Failed to connect [WinError 1225] 远程计算机拒绝网络连接。
+WARNING:edge.adapters.opcua_client:opcua reconnecting after error
+Traceback (most recent call last):
+  File "D:\project\Palpation\edge\adapters\opcua_client.py", line 106, in run
+    async with Client(url=self.endpoint) as client:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 159, in __aenter__
+    await self.connect()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 461, in connect
+    await self._connect_sequence()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 473, in _connect_sequence
+    await self.connect_socket()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 651, in connect_socket
+    await self.uaclient.connect_socket(self.server_url.hostname, self.server_url.port)
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\ua_client.py", line 566, in connect_socket
+    await asyncio.wait_for(
+  File "D:\Python312\Lib\asyncio\tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1127, in create_connection
+    raise exceptions[0]
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1102, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1005, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "D:\Python312\Lib\asyncio\proactor_events.py", line 729, in sock_connect
+    return await self._proactor.connect(sock, address)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\windows_events.py", line 803, in _poll
+    value = callback(transferred, key, ov)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\windows_events.py", line 599, in finish_connect
+    ov.getresult()
+ConnectionRefusedError: [WinError 1225] 远程计算机拒绝网络连接。
+INFO:asyncua.client.client:connect (auto_reconnect=None)
+INFO:asyncua.client.ua_client.UaClient:opening connection
+WARNING:pymodbus.logging:Repeating....
+WARNING:edge.adapters.opcua_client:opcua reconnecting after error
+Traceback (most recent call last):
+  File "D:\project\Palpation\edge\adapters\opcua_client.py", line 106, in run
+    async with Client(url=self.endpoint) as client:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 159, in __aenter__
+    await self.connect()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 461, in connect
+    await self._connect_sequence()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 473, in _connect_sequence
+    await self.connect_socket()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 651, in connect_socket
+    await self.uaclient.connect_socket(self.server_url.hostname, self.server_url.port)
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\ua_client.py", line 566, in connect_socket
+    await asyncio.wait_for(
+  File "D:\Python312\Lib\asyncio\tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1127, in create_connection
+    raise exceptions[0]
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1102, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1005, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "D:\Python312\Lib\asyncio\proactor_events.py", line 729, in sock_connect
+    return await self._proactor.connect(sock, address)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\windows_events.py", line 803, in _poll
+    value = callback(transferred, key, ov)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\windows_events.py", line 599, in finish_connect
+    ov.getresult()
+ConnectionRefusedError: [WinError 1225] 远程计算机拒绝网络连接。
+INFO:asyncua.client.client:connect (auto_reconnect=None)
+INFO:asyncua.client.ua_client.UaClient:opening connection
+WARNING:edge.adapters.opcua_client:opcua reconnecting after error
+Traceback (most recent call last):
+  File "D:\project\Palpation\edge\adapters\opcua_client.py", line 106, in run
+    async with Client(url=self.endpoint) as client:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 159, in __aenter__
+    await self.connect()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 461, in connect
+    await self._connect_sequence()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 473, in _connect_sequence
+    await self.connect_socket()
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\client.py", line 651, in connect_socket
+    await self.uaclient.connect_socket(self.server_url.hostname, self.server_url.port)
+  File "D:\project\Palpation\.venv\Lib\site-packages\asyncua\client\ua_client.py", line 566, in connect_socket
+    await asyncio.wait_for(
+  File "D:\Python312\Lib\asyncio\tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1127, in create_connection
+    raise exceptions[0]
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1102, in create_connection
+    sock = await self._connect_sock(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\base_events.py", line 1005, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "D:\Python312\Lib\asyncio\proactor_events.py", line 729, in sock_connect
+    return await self._proactor.connect(sock, address)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\windows_events.py", line 803, in _poll
+    value = callback(transferred, key, ov)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Python312\Lib\asyncio\windows_events.py", line 599, in finish_connect
+    ov.getresult()
+ConnectionRefusedError: [WinError 1225] 远程计算机拒绝网络连接。
+[21:49:12] [6/8] 查询 cloud API 验证数据流...
+
+--- /health ---
+INFO:     127.0.0.1:52208 - "GET /health HTTP/1.1" 200 OK
+{
+    "ok": "true",
+    "role": "cloud-increment-stub"
+}
+
+--- /v1/events ---
+INFO:     127.0.0.1:52210 - "GET /v1/events HTTP/1.1" 200 OK
+[
+    {
+        "event_id": "01M4TRCD73XMVWF4QDWFXRYP6E",
+        "gw_id": "gw-sim-001",
+        "seq": 90,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRCCCRTVTQXDA818T44W22",
+        "gw_id": "gw-sim-001",
+        "seq": 89,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRC7BCN71AKHT9V3KHNBWE",
+        "gw_id": "gw-sim-001",
+        "seq": 88,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRC6H1ZP9N2M271DWYWZV4",
+        "gw_id": "gw-sim-001",
+        "seq": 87,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRC2M09GG2X68V4ACMFKWH",
+        "gw_id": "gw-sim-001",
+        "seq": 86,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRC1FSN2ZX71AR92B33ZG4",
+        "gw_id": "gw-sim-001",
+        "seq": 85,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRC0PV62DPK7W4YMSBT23Y",
+        "gw_id": "gw-sim-001",
+        "seq": 84,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRBXQJJRJA8BMDM98TTDXS",
+        "gw_id": "gw-sim-001",
+        "seq": 83,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRBV4D5THJ3HJ28TVDFJEW",
+        "gw_id": "gw-sim-001",
+        "seq": 82,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRBP80S0A83Y560DGDXWSX",
+        "gw_id": "gw-sim-001",
+        "seq": 81,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRBHBK3JH4HB0340CWMT0T",
+        "gw_id": "gw-sim-001",
+        "seq": 80,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRBCF7EH8VJ9JKJ97FMB8C",
+        "gw_id": "gw-sim-001",
+        "seq": 79,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRB7JV2C2SWJ2V9H6V1138",
+        "gw_id": "gw-sim-001",
+        "seq": 78,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRB2PCSH4BC9S91V360E5X",
+        "gw_id": "gw-sim-001",
+        "seq": 77,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRAXSY40A5KHTZEWRSKPGJ",
+        "gw_id": "gw-sim-001",
+        "seq": 76,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRARXFRJ4Q7RBBTSKXYMS2",
+        "gw_id": "gw-sim-001",
+        "seq": 75,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRAM11TWAKWDWB5BFKK7D7",
+        "gw_id": "gw-sim-001",
+        "seq": 74,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRAF4J90RF2SANF5XW52RW",
+        "gw_id": "gw-sim-001",
+        "seq": 73,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRAA83MCG9S44N6DTQR1WH",
+        "gw_id": "gw-sim-001",
+        "seq": 72,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRA5BSWKVVJSQXCH1XY55S",
+        "gw_id": "gw-sim-001",
+        "seq": 71,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TRA0F963JX47Y6F53XQQVT",
+        "gw_id": "gw-sim-001",
+        "seq": 70,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR9VJVQE3RCQR7X4QJZ3C3",
+        "gw_id": "gw-sim-001",
+        "seq": 69,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR9PPFMBPVTTMECJZC1PXJ",
+        "gw_id": "gw-sim-001",
+        "seq": 68,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR9HT2C9430KXKRW83JW65",
+        "gw_id": "gw-sim-001",
+        "seq": 67,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR9CXKM1J07E35PBP1GW7K",
+        "gw_id": "gw-sim-001",
+        "seq": 66,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR9817VKBEWTVVSY7WNDAY",
+        "gw_id": "gw-sim-001",
+        "seq": 65,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR934SXHH3GNS60ETS85W9",
+        "gw_id": "gw-sim-001",
+        "seq": 64,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR8Y8CED0ZQRK71MERQ5ME",
+        "gw_id": "gw-sim-001",
+        "seq": 63,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR8SBY8SNW0S5KKY5ZNQ21",
+        "gw_id": "gw-sim-001",
+        "seq": 62,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR8MFH8FB8K0BS96BQ20FT",
+        "gw_id": "gw-sim-001",
+        "seq": 61,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR8FK25BDWZS8GFC47K6CK",
+        "gw_id": "gw-sim-001",
+        "seq": 60,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR8APPT74FAB25C1VXT46S",
+        "gw_id": "gw-sim-001",
+        "seq": 59,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR85T8410MCPV0NX6YM9Z0",
+        "gw_id": "gw-sim-001",
+        "seq": 58,
+        "status": "received"
+    },
+    {
+        "event_id": "evt-real-multi-003",
+        "gw_id": "gw-real-001",
+        "seq": 3,
+        "status": "received"
+    },
+    {
+        "event_id": "evt-real-multi-002",
+        "gw_id": "gw-real-001",
+        "seq": 2,
+        "status": "received"
+    },
+    {
+        "event_id": "evt-real-multi-001",
+        "gw_id": "gw-real-001",
+        "seq": 1,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR80XWE7BG53W25YGPJ1F2",
+        "gw_id": "gw-sim-001",
+        "seq": 57,
+        "status": "received"
+    },
+    {
+        "event_id": "evt-real-pipeline-001",
+        "gw_id": "gw-real-001",
+        "seq": 1,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR7W1D5YQK0JK8TNT7RTD2",
+        "gw_id": "gw-sim-001",
+        "seq": 56,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR7Q5092HDAEA8CBYHGK36",
+        "gw_id": "gw-sim-001",
+        "seq": 55,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR7J8GPTW2Q3P61WW8QH64",
+        "gw_id": "gw-sim-001",
+        "seq": 54,
+        "status": "received"
+    },
+    {
+        "event_id": "evt-real-rt-001",
+        "gw_id": "gw-real-001",
+        "seq": 1,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR7DC3XW1QVCTEDCRZ1BGJ",
+        "gw_id": "gw-sim-001",
+        "seq": 53,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR78FPVDXFJ1RRWM5KYP7Q",
+        "gw_id": "gw-sim-001",
+        "seq": 52,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR73K8BEM64R4TS0D9JPTT",
+        "gw_id": "gw-sim-001",
+        "seq": 51,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR6YPV4Z85N2CMMVXBX0K9",
+        "gw_id": "gw-sim-001",
+        "seq": 50,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR6STD4DJKGK59D7985K8N",
+        "gw_id": "gw-sim-001",
+        "seq": 49,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR6MXY6VAFYW0VRZGWFZ1V",
+        "gw_id": "gw-sim-001",
+        "seq": 48,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR6G1HJYFZHX96BTEHQP6P",
+        "gw_id": "gw-sim-001",
+        "seq": 47,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR6B531TC2SYMSSBAFH7WS",
+        "gw_id": "gw-sim-001",
+        "seq": 46,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR668Q1M5SJDSSZSXHYXEV",
+        "gw_id": "gw-sim-001",
+        "seq": 45,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR61CBRJHHRGK9R1XMGD7Q",
+        "gw_id": "gw-sim-001",
+        "seq": 44,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR5WFXMMJKP3SD1T58MADA",
+        "gw_id": "gw-sim-001",
+        "seq": 43,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR5QKGGJ2Y4QQ4ABYDNMAZ",
+        "gw_id": "gw-sim-001",
+        "seq": 42,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR5JQ108M82N1A4ZNQ7Z7N",
+        "gw_id": "gw-sim-001",
+        "seq": 41,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR5DTKGC2C4BJ1PG2GJ4D4",
+        "gw_id": "gw-sim-001",
+        "seq": 40,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR58Y5JD4NP8RVZC5B1PXF",
+        "gw_id": "gw-sim-001",
+        "seq": 39,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR541Q9K5G3SK7AJJ701D9",
+        "gw_id": "gw-sim-001",
+        "seq": 38,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR4Z5ADMN7F794ZDM73BST",
+        "gw_id": "gw-sim-001",
+        "seq": 37,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR4T8PJE5TBH465PZY2W6W",
+        "gw_id": "gw-sim-001",
+        "seq": 36,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR4NC815PVDNV916N7Q66N",
+        "gw_id": "gw-sim-001",
+        "seq": 35,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR4GFVGZA040WHK53T707B",
+        "gw_id": "gw-sim-001",
+        "seq": 34,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR4BKCCQPFRK9G18KG1SFB",
+        "gw_id": "gw-sim-001",
+        "seq": 33,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR46Q1TR5P10N2QRWXCBS9",
+        "gw_id": "gw-sim-001",
+        "seq": 32,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR41TH8KGEDXJ9C6AKNDNH",
+        "gw_id": "gw-sim-001",
+        "seq": 31,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR3WY220MYD8H0AHHR87W5",
+        "gw_id": "gw-sim-001",
+        "seq": 30,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR3R16WTFGBD2D5M5N0KYJ",
+        "gw_id": "gw-sim-001",
+        "seq": 29,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR3K4SQSFWCPBQPEZBK1FY",
+        "gw_id": "gw-sim-001",
+        "seq": 28,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR3E88WBBTQRTHEVZGV08Q",
+        "gw_id": "gw-sim-001",
+        "seq": 27,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR39BT017V2FYFZ0KM3G0N",
+        "gw_id": "gw-sim-001",
+        "seq": 26,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR34FGN9C0YAZTEF275BJJ",
+        "gw_id": "gw-sim-001",
+        "seq": 25,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR2ZJMJN5VMXH74C8QS4H6",
+        "gw_id": "gw-sim-001",
+        "seq": 24,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR2TP02MKWWTDZ5BD0GMDF",
+        "gw_id": "gw-sim-001",
+        "seq": 23,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR2NSGTSQ0XTS93ZGZSPD8",
+        "gw_id": "gw-sim-001",
+        "seq": 22,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR2GWZJ5DEQ96TFNFWJDF8",
+        "gw_id": "gw-sim-001",
+        "seq": 21,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR2C0F5TY7R45KQSFVFEAB",
+        "gw_id": "gw-sim-001",
+        "seq": 20,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR27427AKHB0X9GGGJZFG9",
+        "gw_id": "gw-sim-001",
+        "seq": 19,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR227NQRFJS1KW9DAEYD3N",
+        "gw_id": "gw-sim-001",
+        "seq": 18,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR1XB8EWNTPAHQWXCPWR0K",
+        "gw_id": "gw-sim-001",
+        "seq": 17,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4TR1R0762CG0NDSYEY4NK7Y",
+        "gw_id": "gw-sim-001",
+        "seq": 16,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QFFJXMTG34A6X28K5N0NX2",
+        "gw_id": "gw-sim-001",
+        "seq": 15,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QFFE0MXBDAQWZC348REGA9",
+        "gw_id": "gw-sim-001",
+        "seq": 14,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QFF9409FN23K1WT9A46FNK",
+        "gw_id": "gw-sim-001",
+        "seq": 13,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QFEQJ9KVHS3A8V4QERYSJ6",
+        "gw_id": "gw-sim-001",
+        "seq": 12,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QFEJNK18877QS5KH2X7H08",
+        "gw_id": "gw-sim-001",
+        "seq": 11,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QFEDS7897PXT25V2JGNKVR",
+        "gw_id": "gw-sim-001",
+        "seq": 10,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QF7GXEZV3T7221K0MMY9SC",
+        "gw_id": "gw-sim-001",
+        "seq": 9,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QF7C0XRVQSN6BNR8VDZ02B",
+        "gw_id": "gw-sim-001",
+        "seq": 8,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QF774A653K8MAR0SZADD92",
+        "gw_id": "gw-sim-001",
+        "seq": 7,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QEYY1EJN0HJ84NPNQADCEW",
+        "gw_id": "gw-sim-001",
+        "seq": 6,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QEYS4XFBSKT0RSACXJJ8C4",
+        "gw_id": "gw-sim-001",
+        "seq": 5,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QEYM8G3QAJWRXEKV7329J7",
+        "gw_id": "gw-sim-001",
+        "seq": 4,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QDZ00P2RX6DNG9541T6STC",
+        "gw_id": "gw-sim-001",
+        "seq": 3,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QDYV48PKTTTRP9NV0JCYS6",
+        "gw_id": "gw-sim-001",
+        "seq": 2,
+        "status": "received"
+    },
+    {
+        "event_id": "01M4QDYP7SSA97DVK9H4NZ8S0X",
+        "gw_id": "gw-sim-001",
+        "seq": 1,
+        "status": "received"
+    }
+]
+[21:49:13]   事件数量: 95
+
+--- /v1/watermarks/gw-sim-001 ---
+INFO:     127.0.0.1:52222 - "GET /v1/watermarks/gw-sim-001 HTTP/1.1" 200 OK
+{
+    "gw_id": "gw-sim-001",
+    "last_acked_seq": 90,
+    "gaps": []
+}
+[21:49:14] [7/8] OTA 流程验证...
+
+--- POST /v1/devices/register ---
+INFO:     127.0.0.1:52223 - "POST /v1/devices/register HTTP/1.1" 200 OK
+{
+    "gw_id": "gw-sim-001"
+}
+
+--- POST /v1/models/register ---
+INFO:     127.0.0.1:52225 - "POST /v1/models/register HTTP/1.1" 200 OK
+{
+    "model_id": "anomaly-det",
+    "version": "0.2.0",
+    "artifact_url": "http://127.0.0.1:8000/v1/models/artifacts/anomaly-det-0.2.0-model_07P7.onnx",
+    "sha256": "53e3b3d5d6d7613e52cbe0fb31820631042d57758c692eea23a71eadd57cccd5",
+    "size_bytes": 22,
+    "quant": "int8",
+    "runtime": "onnxruntime",
+    "target_hardware": [
+        "x86-avx2"
+    ],
+    "requires_firmware": "0.1.0",
+    "preproc_ver": "ae-v1",
+    "metrics_at_register": {},
+    "rollout": {
+        "strategy": "ring",
+        "rings": [
+            1,
+            10,
+            50,
+            100
+        ],
+        "stable_window_h": "24"
+    },
+    "signature": null,
+    "schema_ver": "1.0"
+}
+
+--- POST /v1/rollout ---
+INFO:     127.0.0.1:52226 - "POST /v1/rollout HTTP/1.1" 200 OK
+{
+    "ok": true,
+    "manifest": {
+        "model_id": "anomaly-det",
+        "version": "0.2.0",
+        "artifact_url": "http://127.0.0.1:8000/v1/models/artifacts/anomaly-det-0.2.0-model_KtTT.onnx",
+        "sha256": "53e3b3d5d6d7613e52cbe0fb31820631042d57758c692eea23a71eadd57cccd5",
+        "size_bytes": 22,
+        "quant": "int8",
+        "runtime": "onnxruntime",
+        "target_hardware": [
+            "x86-avx2"
+        ],
+        "requires_firmware": "0.1.0",
+        "preproc_ver": "ae-v1",
+        "metrics_at_register": {},
+        "rollout": {
+            "strategy": "ring",
+            "rings": [
+                1,
+                10,
+                50,
+                100
+            ],
+            "stable_window_h": "24"
+        },
+        "signature": null,
+        "schema_ver": "1.0"
+    }
+}
+[21:49:14] [8/8] 联调结果汇总
+
+=== 联调结果 ===
+INFO:     127.0.0.1:52228 - "GET /health HTTP/1.1" 200 OK
+  cloud 健康:     OK
+INFO:     127.0.0.1:52229 - "GET /health HTTP/1.1" 200 OK
+  edge 健康:      OK
+  事件入库:       95 条
+  数据流验证:     PASS (传感器→边缘→云端)
+
+[21:49:14] 端到端联调脚本执行完毕
+
+=== 清理后台进程 ===
+  终止 PID 5317
+  终止 PID 5323
+  终止 PID 5344
+=== 清理完成 ===

@@ -1,0 +1,60 @@
+$ curl -X POST /v1/models/register  (multipart: file + model_id + version)
+{
+    "model_id": "anomaly-det",
+    "version": "0.2.0",
+    "artifact_url": "http://127.0.0.1:8000/v1/models/artifacts/anomaly-det-0.2.0-m_jkiO.onnx",
+    "sha256": "e4877ec290e6f3b404b0902bf9436d56db9c9d4996cfdc70dfbd20ef822f8c2b",
+    "size_bytes": 16,
+    "quant": "int8",
+    "runtime": "onnxruntime",
+    "target_hardware": [
+        "x86-avx2"
+    ],
+    "requires_firmware": "0.1.0",
+    "preproc_ver": "ae-v1",
+    "metrics_at_register": {},
+    "rollout": {
+        "strategy": "ring",
+        "rings": [
+            1,
+            10,
+            50,
+            100
+        ],
+        "stable_window_h": "24"
+    },
+    "signature": null,
+    "schema_ver": "1.0"
+}
+
+$ curl -X POST /v1/rollout  (json: gw_id + model_id + version)
+{
+    "ok": true,
+    "manifest": {
+        "model_id": "anomaly-det",
+        "version": "0.2.0",
+        "artifact_url": "http://127.0.0.1:8000/v1/models/artifacts/anomaly-det-0.2.0-model_KtTT.onnx",
+        "sha256": "53e3b3d5d6d7613e52cbe0fb31820631042d57758c692eea23a71eadd57cccd5",
+        "size_bytes": 22,
+        "quant": "int8",
+        "runtime": "onnxruntime",
+        "target_hardware": [
+            "x86-avx2"
+        ],
+        "requires_firmware": "0.1.0",
+        "preproc_ver": "ae-v1",
+        "metrics_at_register": {},
+        "rollout": {
+            "strategy": "ring",
+            "rings": [
+                1,
+                10,
+                50,
+                100
+            ],
+            "stable_window_h": "24"
+        },
+        "signature": null,
+        "schema_ver": "1.0"
+    }
+}

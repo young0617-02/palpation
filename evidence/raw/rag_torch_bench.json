@@ -1,0 +1,36 @@
+{
+  "baseline_rss_mb": 375.11,
+  "dim": 512,
+  "load_seconds": 0.18,
+  "loaded_rss_mb": 484.85,
+  "load_delta_mb": 109.74,
+  "load_peak_delta_mb": 109.73,
+  "model_dir_mb": 183.35,
+  "model_weights_mb": 182.79,
+  "site_packages_mb": 818.6,
+  "single_peak_delta_mb": 0.78,
+  "single_peak_rss_mb": 486.12,
+  "batch_peak_delta_mb": 33.08,
+  "batch_peak_rss_mb": 519.19,
+  "process_peak_rss_mb": 519.19,
+  "latency_2": {
+    "n": 25.0,
+    "mean": 6.440388002665713,
+    "p50": 6.452700006775558,
+    "p95": 7.050360005814582,
+    "p99": 7.063544015400112,
+    "min": 5.79610001295805,
+    "max": 7.06580001860857,
+    "index_peak_delta_mb": 0.765625
+  },
+  "latency_1000": {
+    "n": 25.0,
+    "mean": 7.6494959951378405,
+    "p50": 7.049999985611066,
+    "p95": 10.589859989704562,
+    "p99": 12.923067976953456,
+    "min": 5.975500011118129,
+    "max": 13.622499973280355,
+    "index_peak_delta_mb": 121.7578125
+  }
+}

@@ -1,0 +1,48 @@
+# =============================================================================
+# edge-agent.service — 边缘 Agent 主应用 systemd 服务
+# 方案文档 §7.6：管理代理与主应用进程隔离
+#   管理代理（mgmt-agent.service）必须先于本服务启动（Before= 已在 mgmt 侧声明）
+# 安装：
+#   sudo cp deploy/edge-agent.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now edge-agent.service
+# =============================================================================
+[Unit]
+Description=Edge AI Agent - Main Application
+Documentation=https://github.com/palpation/edge-ai-agent
+After=network-online.target mgmt-agent.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=edge-agent
+Group=edge-agent
+WorkingDirectory=/opt/edge-agent
+ExecStart=/opt/edge-agent/.venv/bin/python -m edge.main
+Environment=EDGE_API_PORT=9000
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=3
+StartLimitIntervalSec=60
+
+# 资源限制（对应 docker-compose.edge.yml 的 cpus=2.0 / mem_limit=4g）
+CPUQuota=200%
+MemoryMax=4G
+TasksMax=256
+
+# 安全加固（对应容器 read_only + cap_drop ALL）
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/edge-agent /opt/edge-agent/models
+CapabilityBoundingSet=
+AmbientCapabilities=
+
+# 日志输出到 journald
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=edge-agent
+
+[Install]
+WantedBy=multi-user.target

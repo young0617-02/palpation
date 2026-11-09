@@ -1,0 +1,17 @@
+{
+  "bearing_wear": {
+    "symptoms": ["bearing_rms_high", "temperature_high"],
+    "causes": ["lubrication_failure", "misalignment", "fatigue"],
+    "actions": ["检查润滑", "检查对中", "安排轴承更换窗口"]
+  },
+  "lubrication_failure": {
+    "symptoms": ["bearing_rms_high", "temperature_high"],
+    "causes": ["oil_starvation"],
+    "actions": ["检查油位与脂质"]
+  },
+  "overload": {
+    "symptoms": ["current_high"],
+    "causes": ["process_load", "mechanical_jam"],
+    "actions": ["核对工况负荷", "检查机械卡阻"]
+  }
+}

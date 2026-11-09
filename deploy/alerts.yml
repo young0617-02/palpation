@@ -1,0 +1,72 @@
+# Edge AI Agent 告警规则
+#
+# 覆盖端侧关键故障维度：
+#   - 推理延迟超阈值（P95 > 3000ms，持续 10m）
+#   - 队列积压（depth > 10000，持续 5m）
+#   - 离线超时（offline > 24h）
+#   - 磁盘空间不足（free < 500MB）
+#   - 模型版本不匹配（current != desired）
+#   - CPU 温度过高（temp > 80°C）
+
+groups:
+  - name: edge_alerts
+    rules:
+      - alert: InferenceP95High
+        expr: edge_inference_p95_ms > 3000
+        for: 10m
+        labels:
+          severity: warning
+          team: edge
+        annotations:
+          summary: "推理 P95 延迟超阈值"
+          description: "边缘推理 P95 延迟超过 3000ms，可能影响实时性"
+
+      - alert: QueueDepthHigh
+        expr: edge_queue_depth > 10000
+        for: 5m
+        labels:
+          severity: warning
+          team: edge
+        annotations:
+          summary: "队列积压告警"
+          description: "边缘队列深度超过 10000，断网补传可能丢失事件"
+
+      - alert: OfflineTooLong
+        expr: edge_offline_duration_s > 86400
+        for: 30m
+        labels:
+          severity: warning
+          team: edge
+        annotations:
+          summary: "边缘设备离线超时"
+          description: "边缘设备离线超过 24 小时，请检查网络连接"
+
+      - alert: DiskSpaceLow
+        expr: edge_disk_free_mb < 500
+        for: 5m
+        labels:
+          severity: warning
+          team: edge
+        annotations:
+          summary: "磁盘空间不足"
+          description: "边缘设备可用磁盘空间低于 500MB"
+
+      - alert: ModelVersionMismatch
+        expr: edge_model_version != edge_desired_model_version
+        for: 5m
+        labels:
+          severity: critical
+          team: edge
+        annotations:
+          summary: "模型版本不匹配"
+          description: "当前模型版本与期望版本不一致，可能需要 OTA 更新"
+
+      - alert: HighCpuTemp
+        expr: edge_cpu_temp_c > 80
+        for: 5m
+        labels:
+          severity: warning
+          team: edge
+        annotations:
+          summary: "CPU 温度过高"
+          description: "边缘设备 CPU 温度超过 80°C，可能触发降级"

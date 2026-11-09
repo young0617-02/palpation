@@ -1,0 +1,204 @@
+{
+  "mode": "full",
+  "enable_arena": false,
+  "env": {
+    "python": "3.12.8",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "onnxruntime": "1.31.0",
+    "transformers": "5.20.2",
+    "tokenizers": "0.23.3",
+    "numpy": "2.5.4",
+    "psutil": "7.2.2",
+    "cpu_logical": 20,
+    "cpu_physical": 14,
+    "ram_total_mb": 32559.8671875
+  },
+  "rss_baseline_mb": 79.71484375,
+  "rss_after_imports_mb": 79.71484375,
+  "rss_after_session_mb": 126.41796875,
+  "rss_model_increment_mb": 46.703125,
+  "single_rss_peak_mb": 126.44140625,
+  "single_rss_delta_mb": 0.0234375,
+  "single_tokenize_ms": 1.0036999883595854,
+  "single_forward_ms": 5.256100004771724,
+  "batch_rss_peak_mb": 191.83203125,
+  "batch_rss_delta_mb": 65.4140625,
+  "latency": [
+    {
+      "corpus_size": 2,
+      "iters": 30,
+      "warmup": 5,
+      "top_k": 3,
+      "build_ms": 43.836699973326176,
+      "tokenize": {
+        "n": 30,
+        "mean": 0.35547333730695146,
+        "p50": 0.30250000418163836,
+        "p95": 0.5771100069978274,
+        "min": 0.24980001035146415,
+        "max": 0.9031000081449747
+      },
+      "forward": {
+        "n": 30,
+        "mean": 6.726029998390004,
+        "p50": 6.416800009901635,
+        "p95": 10.420085009536706,
+        "min": 3.4315999946556985,
+        "max": 15.428599988808855
+      },
+      "rank": {
+        "n": 30,
+        "mean": 0.045740000011088945,
+        "p50": 0.03770001058001071,
+        "p95": 0.10348500218242407,
+        "min": 0.030800001695752144,
+        "max": 0.14089999604038894
+      },
+      "total": {
+        "n": 30,
+        "mean": 7.1272433357080445,
+        "p50": 6.76575000397861,
+        "p95": 10.74784502707189,
+        "min": 3.716600011102855,
+        "max": 15.846099995542318
+      },
+      "sample_hits": [
+        {
+          "id": "kb-bearing-rms",
+          "title": "离心泵驱动端轴承振动 RMS",
+          "score": 0.7262225151062012
+        },
+        {
+          "id": "kb-temp-current",
+          "title": "温度与电流联合判据",
+          "score": 0.7034952640533447
+        }
+      ]
+    },
+    {
+      "corpus_size": 1000,
+      "iters": 30,
+      "warmup": 5,
+      "top_k": 3,
+      "build_ms": 24234.03769999277,
+      "tokenize": {
+        "n": 30,
+        "mean": 0.2712866640649736,
+        "p50": 0.2622499887365848,
+        "p95": 0.31495498260483146,
+        "min": 0.24279998615384102,
+        "max": 0.3237999917473644
+      },
+      "forward": {
+        "n": 30,
+        "mean": 4.452473336520295,
+        "p50": 4.248600002028979,
+        "p95": 5.830364991561508,
+        "min": 3.6106999905314296,
+        "max": 7.832400006009266
+      },
+      "rank": {
+        "n": 30,
+        "mean": 0.41739333246368915,
+        "p50": 0.411750006605871,
+        "p95": 0.5018450057832524,
+        "min": 0.3141000051982701,
+        "max": 0.5498999962583184
+      },
+      "total": {
+        "n": 30,
+        "mean": 5.141153333048957,
+        "p50": 4.938650003168732,
+        "p95": 6.558639979630241,
+        "min": 4.198700014967471,
+        "max": 8.47480000811629
+      },
+      "sample_hits": [
+        {
+          "id": "kb-fake-0868",
+          "title": "给水泵驱动端轴承振动 RMS 7.2mm/s 越限",
+          "score": 0.7337474822998047
+        },
+        {
+          "id": "kb-bearing-rms",
+          "title": "离心泵驱动端轴承振动 RMS",
+          "score": 0.728754997253418
+        },
+        {
+          "id": "kb-fake-0293",
+          "title": "输送带电机驱动端轴承振动 RMS 5.0mm/s 越限",
+          "score": 0.7287435531616211
+        }
+      ]
+    }
+  ],
+  "rss_steady_mb": 142.16796875,
+  "rss_final_mb": 142.16796875,
+  "disk": {
+    "model_dir_bytes": 24564937,
+    "model_files": [
+      {
+        "path": ".cache\\huggingface\\.gitignore",
+        "bytes": 1
+      },
+      {
+        "path": ".cache\\huggingface\\CACHEDIR.TAG",
+        "bytes": 195
+      },
+      {
+        "path": ".cache\\huggingface\\download\\config.json.metadata",
+        "bytes": 104
+      },
+      {
+        "path": ".cache\\huggingface\\download\\onnx\\model_quantized.onnx.metadata",
+        "bytes": 127
+      },
+      {
+        "path": ".cache\\huggingface\\download\\special_tokens_map.json.metadata",
+        "bytes": 104
+      },
+      {
+        "path": ".cache\\huggingface\\download\\tokenizer.json.metadata",
+        "bytes": 103
+      },
+      {
+        "path": ".cache\\huggingface\\download\\tokenizer_config.json.metadata",
+        "bytes": 104
+      },
+      {
+        "path": ".cache\\huggingface\\download\\vocab.txt.metadata",
+        "bytes": 104
+      },
+      {
+        "path": ".cache\\huggingface\\trees\\75c43b069aac4d136ba6bc1122f995fedcfd2781.json",
+        "bytes": 3380
+      },
+      {
+        "path": "config.json",
+        "bytes": 716
+      },
+      {
+        "path": "onnx\\model_quantized.onnx",
+        "bytes": 24010842
+      },
+      {
+        "path": "special_tokens_map.json",
+        "bytes": 125
+      },
+      {
+        "path": "tokenizer.json",
+        "bytes": 439125
+      },
+      {
+        "path": "tokenizer_config.json",
+        "bytes": 367
+      },
+      {
+        "path": "vocab.txt",
+        "bytes": 109540
+      }
+    ],
+    "venv_site_packages_bytes": 182076293,
+    "venv_total_bytes": 183193158
+  }
+}

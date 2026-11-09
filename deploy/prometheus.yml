@@ -1,0 +1,38 @@
+# Prometheus 采集配置 — Edge AI Agent 监控
+#
+# 采集两个作业：
+#   - edge-agent: 边缘代理 /metrics 端点（端口 9000，10s 间隔）
+#   - cloud-api:  云端 API /metrics 端点（端口 8000，15s 间隔）
+#
+# 告警规则引用同目录 alerts.yml，告警发送至 Alertmanager（端口 9093）。
+
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'edge-ai-agent'
+
+scrape_configs:
+  - job_name: 'edge-agent'
+    static_configs:
+      - targets: ['localhost:9000']
+        labels:
+          service: 'edge-agent'
+    metrics_path: /metrics
+    scrape_interval: 10s
+
+  - job_name: 'cloud-api'
+    static_configs:
+      - targets: ['localhost:8000']
+        labels:
+          service: 'cloud-api'
+    metrics_path: /metrics
+    scrape_interval: 15s
+
+rule_files:
+  - 'alerts.yml'
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['localhost:9093']

@@ -1,0 +1,77 @@
+# Pointer-style current config. On POSIX production this is a symlink to v0001.yaml.
+# Windows sim uses this file as the live copy (scheme §4.4).
+gw_id: gw-sim-001
+firmware_version: "0.1.0"
+config_version: v0001
+site: lab
+group_id: plant1
+
+sampling:
+  vibration_window: 32
+  telemetry_period_s: 10
+  health_period_s: 15
+  raw_rate_hz: 10.0
+
+upload:
+  telemetry_qos: 0
+  event_qos: 1
+  health_qos: 0
+
+rules:
+  - id: bearing_rms_high
+    metric: vibration_rms
+    op: ">"
+    threshold: 4.5
+    severity: high
+    description: 驱动端轴承振动 RMS 越限
+  - id: temperature_high
+    metric: temperature
+    op: ">"
+    threshold: 80.0
+    severity: medium
+    description: 轴承温度越限
+  - id: current_high
+    metric: current
+    op: ">"
+    threshold: 18.0
+    severity: medium
+    description: 电机电流越限
+
+anomaly:
+  enabled: true
+  window: 32
+  score_threshold: 3.0
+  preproc_ver: "ae-v1"
+
+llm:
+  enabled: true
+  max_tokens: 32
+  num_ctx: 2048
+  cache_ttl_s: 60
+
+knowledge:
+  enabled: true
+  model_dir: models/knowledge/current   # 相对仓库根；留空则用 settings.models_dir/knowledge/current
+  onnx_file: onnx/model_quantized.onnx
+  dim: 512
+  max_length: 512
+  num_threads: 2
+  enable_cpu_mem_arena: true
+  degrade_to_hash: true                 # true=模型缺失时降级 hash-embed；false=缺失即视为未启用（仍不报错）
+  top_k: 3
+
+degrade:
+  mem_warn_mb: 3072
+  mem_llm_off_mb: 3686
+  disk_stop_model_mb: 500
+  cpu_temp_c: 85.0
+
+privacy:
+  hmac_salt_env: HMAC_SALT
+  temperature_bins: [0, 40, 60, 80, 100, 200]
+
+devices:
+  pump_de:
+    device_id: pump-de-01
+    modbus_host: ${MODBUS_HOST}
+    modbus_port: ${MODBUS_PORT}
